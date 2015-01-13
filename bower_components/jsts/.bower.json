@@ -1,0 +1,20 @@
+{
+  "name": "jsts",
+  "version": "0.15.0",
+  "main": [
+    "dist/javascript.util.js",
+    "dist/jsts.js"
+  ],
+  "ignore": [],
+  "homepage": "https://github.com/hastebrot/jsts-dist",
+  "_release": "0.15.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.15.0",
+    "commit": "1e96bf1094295de20b348c2464c05942efe34e21"
+  },
+  "_source": "git://github.com/hastebrot/jsts-dist.git",
+  "_target": "0.15.0",
+  "_originalSource": "hastebrot/jsts-dist",
+  "_direct": true
+}
