@@ -1,0 +1,42 @@
+{
+  "name": "geodata-tour",
+  "version": "0.0.0",
+  "authors": [
+    "Benjamin Gudehus <hastebrot@gmail.com>"
+  ],
+  "license": "European Union Public License v1.1",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    #"zepto": "^1.1.6",
+    "jquery": "^2.1.3",
+    "lodash": "^2.4.1",
+
+    "d3": "^3.5.3",
+    "d3-geo-projection": "^0.2.12",
+    "topojson": "1.6.18",
+
+    #"dagre": "0.7.1",
+    #"dagre-d3": "0.4.2",
+    #"graphlib": "1.0.1",
+    #"graphlib-dot": "0.6.1",
+
+    #"ol3": "https://github.com/openlayers/ol3/releases/download/v3.1.1/v3.1.1.zip",
+    #"jsts": "https://github.com/bjornharrtell/jsts/releases/download/0.15.0/jsts-0.15.0.zip",
+    "ol3": "hastebrot/ol3-dist#3.1.1",
+    "jsts": "hastebrot/jsts-dist#0.15.0",
+    "proj4": "2.3.3",
+
+    #"polymer": "Polymer/polymer#^0.5.2",
+    #"webcomponentsjs": "polymer/webcomponentsjs#^0.5.2",
+    #"core-elements": "Polymer/core-elements#^0.5.2",
+    #"paper-elements": "Polymer/paper-elements#^0.5.2",
+    #"font-roboto": "Polymer/font-roboto#^0.5.2"
+  }
+}
