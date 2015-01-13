@@ -25,6 +25,82 @@
 <div id="map" class="map"></div>
 
 <script>
+  var image = new ol.style.Circle({
+    radius: 5,
+    fill: null,
+    stroke: new ol.style.Stroke({color: 'red', width: 1})
+  });
+
+  var styles = {
+    'Point': [new ol.style.Style({
+      image: image
+    })],
+    'LineString': [new ol.style.Style({
+      stroke: new ol.style.Stroke({
+        color: 'green',
+        width: 1
+      })
+    })],
+    'MultiLineString': [new ol.style.Style({
+      stroke: new ol.style.Stroke({
+        color: 'green',
+        width: 1
+      })
+    })],
+    'MultiPoint': [new ol.style.Style({
+      image: image
+    })],
+    'MultiPolygon': [new ol.style.Style({
+      stroke: new ol.style.Stroke({
+        color: 'yellow',
+        width: 1
+      }),
+      fill: new ol.style.Fill({
+        color: 'rgba(255, 255, 0, 0.1)'
+      })
+    })],
+    'Polygon': [new ol.style.Style({
+      stroke: new ol.style.Stroke({
+        color: 'blue',
+        lineDash: [4],
+        width: 3
+      }),
+      fill: new ol.style.Fill({
+        color: 'rgba(0, 0, 255, 0.1)'
+      })
+    })],
+    'GeometryCollection': [new ol.style.Style({
+      stroke: new ol.style.Stroke({
+        color: 'magenta',
+        width: 2
+      }),
+      fill: new ol.style.Fill({
+        color: 'magenta'
+      }),
+      image: new ol.style.Circle({
+        radius: 10,
+        fill: null,
+        stroke: new ol.style.Stroke({
+          color: 'magenta'
+        })
+      })
+    })],
+    'Circle': [new ol.style.Style({
+      stroke: new ol.style.Stroke({
+        color: 'red',
+        width: 2
+      }),
+      fill: new ol.style.Fill({
+        color: 'rgba(255,0,0,0.2)'
+      })
+    })]
+  };
+
+  var styleFunction = function(feature, resolution) {
+    return styles[feature.getGeometry().getType()];
+  };
+
+
   var reader = new jsts.io.WKTReader();
   var a = reader.read("POLYGON((0 100, 100 100, 100 200, 0 200, 0 100))");
   var b = reader.read("POLYGON((50 0, 200 0, 200 150, 50 150, 50 0))");
@@ -40,14 +116,14 @@
 
   var magentaStyle = [
     new ol.style.Style({
-      fill: new ol.style.Fill({color: "rgba(155, 155, 155, 0.2)"}),
-      stroke: new ol.style.Stroke({color: "magenta", width: 3, lineDash: [0.5, 5]})
+      fill: new ol.style.Fill({color: "#b2df8a"}),
+      stroke: new ol.style.Stroke({color: "#33a02c", width: 3})
     })
   ];
   var cyanStyle = [
     new ol.style.Style({
-      fill: new ol.style.Fill({color: "rgba(155, 155, 155, 0.2)"}),
-      stroke: new ol.style.Stroke({color: "cyan", width: 3, lineDash: [0.5, 5]})
+      fill: new ol.style.Fill({color: "#1f78b4"}),
+      stroke: new ol.style.Stroke({color: "#1f78b4", width: 3})
     })
   ];
   var resultStyle = [
@@ -92,19 +168,56 @@
 
 
   var map = new ol.Map({
-    layers: [magentaLayer, cyanLayer, resultLayer],
+    //layers: [magentaLayer, cyanLayer, resultLayer],
+    layers: [
+      new ol.layer.Vector({
+        source: new ol.source.GeoJSON({
+          url: "data/maschsee-natural.json"
+        }),
+        style: magentaStyle
+      }),
+      new ol.layer.Vector({
+        source: new ol.source.GeoJSON({
+          url: "data/maschsee-points.json"
+        }),
+        style: resultStyle
+      }),
+      new ol.layer.Vector({
+        source: new ol.source.GeoJSON({
+          url: "data/maschsee-waterways.json"
+        }),
+        style: cyanStyle
+      })
+    ],
     target: "map",
-    logo: false
+    logo: false,
+    view: new ol.View({
+      projection: 'EPSG:4326',
+      center: [0, 0],
+      zoom: 0,
+      maxResolution: 0.703125
+    })
   });
 
-  var extent = _.chain(map.getLayers().getArray())
-      .map(function(layer) {
-        return layer.getSource().getExtent()
-      })
-      .reduce(function(result, item) {
-        return ol.extent.extend(result, item)
-      })
-      .value();
-  map.getView().fitExtent(extent, map.getSize());
+  var fitFullExtent = function(map) {
+    var fullExtent = _.chain(map.getLayers().getArray())
+        .map(function(layer) {
+          return layer.getSource().getExtent()
+        })
+        .reduce(function(result, item) {
+          return ol.extent.extend(result, item)
+        })
+        .value();
+    map.getView().fitExtent(fullExtent, map.getSize());
+  };
+
+  _(map.getLayers().getArray()).each(function(layer) {
+    layer.on("change", function (event) {
+      var source = event.target.getSource();
+      if (source.getState() == "ready") {
+        fitFullExtent(map);
+      }
+    });
+  });
 
 </script>
